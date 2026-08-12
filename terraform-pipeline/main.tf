@@ -1,0 +1,8 @@
+resource "local_file" "myfile" {
+  filename = "automation.txt"
+  content  = "automation/kaaa boommmm"
+}
+
+resource "aws_s3_bucket" "developbucket" {
+  bucket = "dev-saurabh-terraform"
+}
