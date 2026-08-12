@@ -18,6 +18,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: terraform-pipeline
 
     steps:
     # Checkout the repository to the GitHub Actions runner
