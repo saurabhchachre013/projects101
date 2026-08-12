@@ -1,9 +1,8 @@
 name: 'Terraform'
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
+  pull_request: 
+    branches: [ main ]
 
 permissions:
   contents: read
@@ -14,7 +13,6 @@ jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
-    environment: production
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -26,27 +24,39 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
+      uses: hashicorp/setup-terraform@v3
       with:
-        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-
-    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-    - name: Terraform Init
-      run: terraform init
-      continue-on-error: true
-      run: terraform plan -no-color
+        terrform_version: 1.15.8
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
-      run: terraform fmt -check
+      id: fmt
+      run: terraform fmt -check -no-color
       continue-on-error: true
-      run: terraform plan -no-color
+    
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      id: init
+      run: terraform init -no-color
+      continue-on-error: true
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
-      run: terraform plan -out=tfplan
+      id: plan
+      run: terraform plan -out=tfplan -no-color
       continue-on-error: true
-      run: terraform plan -no-color
+      
+    # Get the output in redable format
+    - name: Terraform show
+      id: show  
       run: terraform show -no-color tfplan
+      continue-on-error: true
