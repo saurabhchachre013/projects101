@@ -1,0 +1,32 @@
+# State — never commit, contains secrets in plaintext
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Local backend/plugin cache
+.terraform/
+# .terraform.lock.hcl   # see note below
+
+# Plan files — binary, and contain full state data
+*.tfplan
+tfplan
+plan.out
+
+# Variable files — usually hold secrets
+*.tfvars
+*.tfvars.json
+!example.tfvars
+
+# Crash logs
+crash.log
+crash.*.log
+
+# CLI config with credentials
+.terraformrc
+terraform.rc
+
+# Override files (meant for local-only experiments)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
