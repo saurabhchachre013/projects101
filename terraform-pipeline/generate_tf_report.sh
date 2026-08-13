@@ -23,8 +23,25 @@ REPLACE=$(jq '[.resource_changes[].change.actions | select((index("create") != n
 echo "# Terraform Plan" > "$REPORT"
 
 echo "" >> "$REPORT"
+echo "Status: PASS" >> "$REPORT"
+
+echo "" >> "$REPORT"
 
 echo "## Summary" >> "$REPORT"
+
+if [ "$DESTROY" -gt 0 ] || [ "$REPLACE" -gt 0 ]; then
+    echo "" >> "$REPORT"
+    echo "## Warnings" >> "$REPORT"
+    echo "" >> "$REPORT"
+
+    if [ "$DESTROY" -gt 0 ]; then
+        echo "WARNING: $DESTROY resource(s) will be destroyed." >> "$REPORT"
+    fi
+
+    if [ "$REPLACE" -gt 0 ]; then
+        echo "WARNING: $REPLACE resource(s) will be replaced." >> "$REPORT"
+    fi
+fi
 
 echo "" >> "$REPORT"
 
