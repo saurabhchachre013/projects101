@@ -30,3 +30,9 @@ override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+
+
+planD.json
+terraform-report.md
+tfplan
+tfplan.json

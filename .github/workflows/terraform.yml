@@ -8,6 +8,7 @@ permissions:
   contents: read
   id-token: write
   pull-requests: write
+  models: read
 
 jobs:
   terraform:
@@ -61,8 +62,14 @@ jobs:
       id: show  
       run: |
         terraform show -no-color tfplan > tfplan.txt
-        terraform show tfplan > tfplan.json
+        terraform show -json tfplan > tfplan.json
       continue-on-error: true
 
-    - name: read Terraform json
-      run: cat tfplan.json
+    - name: Generate Terraform Report
+      run: ./generate_tf_report.sh
+
+    - name: Comment Terraform Report
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh pr comment ${{ github.event.pull_request.html_url }} --body-file terraform-report.md
