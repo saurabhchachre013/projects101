@@ -12,8 +12,9 @@ permissions:
 
 jobs:
   terraform:
-    name: 'Terraform'
+    name: 'Terraform-apply'
     runs-on: ubuntu-latest
+    environment: production
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -52,6 +53,5 @@ jobs:
       continue-on-error: true
 
     - name: Terraform Apply
-      environment: production
       id: apply
       run: terraform apply -auto-approve tfplan
