@@ -52,5 +52,6 @@ jobs:
       continue-on-error: true
 
     - name: Terraform Apply
+      environment: production
       id: apply
       run: terraform apply -auto-approve tfplan
