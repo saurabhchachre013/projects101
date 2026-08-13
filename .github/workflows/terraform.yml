@@ -59,5 +59,10 @@ jobs:
     # Get the output in redable format
     - name: Terraform show
       id: show  
-      run: terraform show -no-color tfplan
+      run: 
+        terraform show -no-color tfplan > tfplan.txt
+        terraform show tfplan > tfplan.json
       continue-on-error: true
+
+    - name: read Terraform json
+      run: cat tfplan.json
