@@ -1,0 +1,56 @@
+name: 'Terraform-apply'
+
+on:
+  pull_request: 
+    branches: [ main ]
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+  models: read
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: terraform-pipeline
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.15.8
+    
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      id: init
+      run: terraform init -no-color
+      continue-on-error: true
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -out=tfplan -no-color
+      continue-on-error: true
+
+    - name: Terraform Apply
+      id: plan
+      run: terraform apply -auto-approve tfplan
