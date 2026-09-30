@@ -8,7 +8,7 @@ A pipeline where every cloud resource is created and changed **only** through Te
 
 To make infrastructure changes seamless and repeatable — no manual creation, no human error. Every change is reviewed, planned, and applied the same way, every time, with a trail of who approved what.
 
-## What it will use wer
+## What it will use werxccdcd
 
 - **Terraform** — all infrastructure as code
 - **AWS** — the target cloud
